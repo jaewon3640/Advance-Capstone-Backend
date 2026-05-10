@@ -2,12 +2,14 @@ package com.factcheck.service;
 
 import com.factcheck.Enum.ArticleStatus;
 import com.factcheck.domain.AnalysisResult;
+import com.factcheck.domain.AnalysisSection;
 import com.factcheck.domain.Article;
 import com.factcheck.domain.SentenceAnalysis;
 import com.factcheck.dto.request.AiCallbackRequest;
 import com.factcheck.global.exception.BusinessException;
 import com.factcheck.global.exception.ErrorCode;
 import com.factcheck.repository.AnalysisResultRepository;
+import com.factcheck.repository.AnalysisSectionRepository;
 import com.factcheck.repository.ArticleRepository;
 import com.factcheck.repository.SentenceAnalysisRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +28,7 @@ public class AnalysisCallbackService {
 
     private final ArticleRepository articleRepository;
     private final AnalysisResultRepository analysisResultRepository;
+    private final AnalysisSectionRepository analysisSectionRepository;
     private final SentenceAnalysisRepository sentenceAnalysisRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -57,39 +60,51 @@ public class AnalysisCallbackService {
                 ? String.join(", ", req.getKeywords())
                 : "";
 
-        String sectionsJson  = toJson(req.getSections());
-        String keyFactsJson  = toJson(req.getKeyFacts());
-        String keywordsJson  = toJson(req.getKeywords());
-        String cleanedText   = req.getCompressedText() != null ? req.getCompressedText() : "";
+        String keyFactsJson        = toJson(req.getKeyFacts());
+        String keywordsJson        = toJson(req.getKeywords());
+        String factCheckResultsJson = toJson(req.getFactCheckResults());
+        String cleanedText         = req.getCompressedText() != null ? req.getCompressedText() : "";
 
         AnalysisResult result = AnalysisResult.builder()
                 .article(article)
                 .title(req.getTopic())
                 .keyFacts(keyFactsJson)
                 .keywords(keywordsJson)
-                .sections(sectionsJson)
                 .cleanedText(cleanedText)
                 .factRatioSource(req.getFactRatioSource())
                 .sectionBiasScore(req.getSectionBiasScore() != null ? req.getSectionBiasScore().floatValue() : null)
                 .background(req.getBackground())
-                .cotVocabReason(req.getCotVocabReason())
-                .cotFramingReason(req.getCotFramingReason())
-                .cotCitationReason(req.getCotCitationReason())
-                .cotOmissionReason(req.getCotOmissionReason())
+                .cotEmotionReason(req.getCotEmotionReason())
+                .cotFactRatioReason(req.getCotFactRatioReason())
+                .factCheckResults(factCheckResultsJson)
                 .biasDirection(req.getBiasDirection())
                 .biasLabel(req.getBiasLabel())
                 .biasConfidence(req.getBiasConfidence() != null ? req.getBiasConfidence().floatValue() : null)
                 .biasReason(req.getBiasReason())
-                .spectrumLabel(req.getSpectrumLabel())
                 .emotionNeutrality(req.getEmotionNeutrality() != null ? req.getEmotionNeutrality().floatValue() : null)
                 .factRatio(req.getFactRatio() != null ? req.getFactRatio().floatValue() : null)
-                .sourceBalance(req.getSourceBalance() != null ? req.getSourceBalance().floatValue() : null)
-                .omissionNeutrality(req.getOmissionNeutrality() != null ? req.getOmissionNeutrality().floatValue() : null)
                 .biasScore(req.getBiasScore() != null ? req.getBiasScore().floatValue() : null)
                 .totalScore(req.getTotalScore())
                 .build();
 
         analysisResultRepository.save(result);
+
+        List<AiCallbackRequest.SectionResult> sections = req.getSections();
+        if (sections != null && !sections.isEmpty()) {
+            for (AiCallbackRequest.SectionResult s : sections) {
+                AnalysisSection section = AnalysisSection.builder()
+                        .topic(s.getTopic())
+                        .biasLabel(s.getBiasLabel())
+                        .confidence(s.getConfidence() != null ? s.getConfidence().floatValue() : null)
+                        .reason(s.getReason())
+                        .step1BiasedExpressions(toJson(s.getStep1BiasedExpressions()))
+                        .step2NeutralExpressions(toJson(s.getStep2NeutralExpressions()))
+                        .step3Judgment(s.getStep3Judgment())
+                        .analysisResult(result)
+                        .build();
+                analysisSectionRepository.save(section);
+            }
+        }
 
         List<AiCallbackRequest.HighlightedSentence> highlights = req.getHighlightedSentences();
         if (highlights != null && !highlights.isEmpty()) {

@@ -47,9 +47,6 @@ public class AiCallbackRequest {
     @JsonProperty("bias_direction")
     private String biasDirection;
 
-    @JsonProperty("spectrum_label")
-    private String spectrumLabel;
-
     @JsonProperty("emotion_neutrality")
     private Double emotionNeutrality;
 
@@ -58,12 +55,6 @@ public class AiCallbackRequest {
 
     @JsonProperty("fact_ratio_source")
     private String factRatioSource;
-
-    @JsonProperty("source_balance")
-    private Double sourceBalance;
-
-    @JsonProperty("omission_neutrality")
-    private Double omissionNeutrality;
 
     @JsonProperty("bias_score")
     private Double biasScore;
@@ -77,17 +68,36 @@ public class AiCallbackRequest {
     @JsonProperty("background")
     private String background;
 
-    @JsonProperty("cot_vocab_reason")
-    private String cotVocabReason;
+    @JsonProperty("cot_emotion_reason")
+    private String cotEmotionReason;
 
-    @JsonProperty("cot_framing_reason")
-    private String cotFramingReason;
+    @JsonProperty("cot_fact_ratio_reason")
+    private String cotFactRatioReason;
 
-    @JsonProperty("cot_citation_reason")
-    private String cotCitationReason;
+    @JsonProperty("fact_check_results")
+    private List<FactCheckResult> factCheckResults;
 
-    @JsonProperty("cot_omission_reason")
-    private String cotOmissionReason;
+    @Getter
+    @NoArgsConstructor
+    public static class FactCheckResult {
+        @JsonProperty("fact")
+        private String fact;
+
+        @JsonProperty("found")
+        private Boolean found;
+
+        @JsonProperty("rating")
+        private String rating;
+
+        @JsonProperty("score")
+        private Double score;
+
+        @JsonProperty("publisher")
+        private String publisher;
+
+        @JsonProperty("url")
+        private String url;
+    }
 
     @JsonProperty("highlighted_sentences")
     private List<HighlightedSentence> highlightedSentences;

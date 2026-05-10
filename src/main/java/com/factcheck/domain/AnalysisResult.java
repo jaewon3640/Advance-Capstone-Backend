@@ -29,12 +29,6 @@ public class AnalysisResult {
     @Column(name = "fact_ratio")
     private Float factRatio;
 
-    @Column(name = "source_balance")
-    private Float sourceBalance;
-
-    @Column(name = "omission_neutrality")
-    private Float omissionNeutrality;
-
     @Column(name = "bias_score")
     private Float biasScore;
 
@@ -53,9 +47,6 @@ public class AnalysisResult {
     @Column(name = "title", columnDefinition = "TEXT")
     private String title;
 
-    @Column(name = "spectrum_label", length = 50)
-    private String spectrumLabel;
-
     @Column(name = "analyzed_at")
     private LocalDateTime analyzedAt;
 
@@ -64,9 +55,6 @@ public class AnalysisResult {
 
     @Column(name = "keywords", columnDefinition = "JSON")
     private String keywords;
-
-    @Column(name = "sections", columnDefinition = "JSON")
-    private String sections;
 
     @Column(name = "cleaned_text", columnDefinition = "TEXT")
     private String cleanedText;
@@ -80,17 +68,14 @@ public class AnalysisResult {
     @Column(name = "background", columnDefinition = "TEXT")
     private String background;
 
-    @Column(name = "cot_vocab_reason", columnDefinition = "TEXT")
-    private String cotVocabReason;
+    @Column(name = "cot_emotion_reason", columnDefinition = "TEXT")
+    private String cotEmotionReason;
 
-    @Column(name = "cot_framing_reason", columnDefinition = "TEXT")
-    private String cotFramingReason;
+    @Column(name = "cot_fact_ratio_reason", columnDefinition = "TEXT")
+    private String cotFactRatioReason;
 
-    @Column(name = "cot_citation_reason", columnDefinition = "TEXT")
-    private String cotCitationReason;
-
-    @Column(name = "cot_omission_reason", columnDefinition = "TEXT")
-    private String cotOmissionReason;
+    @Column(name = "fact_check_results", columnDefinition = "JSON")
+    private String factCheckResults;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ARTICLE_ID", unique = true)
@@ -99,38 +84,36 @@ public class AnalysisResult {
     @OneToMany(mappedBy = "analysisResult", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SentenceAnalysis> sentenceAnalyses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "analysisResult", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnalysisSection> sections = new ArrayList<>();
+
     @Builder
     public AnalysisResult(Integer totalScore, Float emotionNeutrality, Float factRatio,
-                          Float sourceBalance, Float omissionNeutrality, Float biasScore,
+                          Float biasScore,
                           String biasDirection, String biasLabel, Float biasConfidence, String biasReason,
-                          String title, String spectrumLabel,
-                          String keyFacts, String keywords, String sections, String cleanedText,
+                          String title,
+                          String keyFacts, String keywords, String cleanedText,
                           String factRatioSource, Float sectionBiasScore,
-                          String background, String cotVocabReason, String cotFramingReason,
-                          String cotCitationReason, String cotOmissionReason, Article article) {
+                          String background, String cotEmotionReason, String cotFactRatioReason,
+                          String factCheckResults, Article article) {
         this.totalScore = totalScore;
         this.emotionNeutrality = emotionNeutrality;
         this.factRatio = factRatio;
-        this.sourceBalance = sourceBalance;
-        this.omissionNeutrality = omissionNeutrality;
         this.biasScore = biasScore;
         this.biasDirection  = biasDirection;
         this.biasLabel      = biasLabel;
         this.biasConfidence = biasConfidence;
         this.biasReason     = biasReason;
         this.title = title;
-        this.spectrumLabel = spectrumLabel;
         this.keyFacts  = keyFacts;
         this.keywords  = keywords;
-        this.sections = sections;
         this.cleanedText = cleanedText;
         this.factRatioSource = factRatioSource;
         this.sectionBiasScore = sectionBiasScore;
         this.background = background;
-        this.cotVocabReason = cotVocabReason;
-        this.cotFramingReason = cotFramingReason;
-        this.cotCitationReason = cotCitationReason;
-        this.cotOmissionReason = cotOmissionReason;
+        this.cotEmotionReason    = cotEmotionReason;
+        this.cotFactRatioReason  = cotFactRatioReason;
+        this.factCheckResults    = factCheckResults;
         this.article = article;
         this.analyzedAt = LocalDateTime.now();
     }

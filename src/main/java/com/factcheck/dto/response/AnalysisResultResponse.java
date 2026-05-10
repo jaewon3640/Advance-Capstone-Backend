@@ -1,6 +1,7 @@
 package com.factcheck.dto.response;
 
 import com.factcheck.domain.AnalysisResult;
+import com.factcheck.domain.AnalysisSection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,17 +36,21 @@ public class AnalysisResultResponse {
     private Float  sectionBiasScore;
     private String background;
     private CotReasons cotReasons;
+    private List<FactCheckResult> factCheckResults;
 
     public AnalysisResultResponse(AnalysisResult result) {
         this.articleId       = result.getArticle().getId();
         this.resultId        = result.getId();
         this.originalText    = result.getArticle().getOriginalText();
-        this.sections        = parseSections(result.getSections());
+        this.sections        = result.getSections().stream()
+                .map(SectionInfo::new)
+                .collect(Collectors.toList());
         this.cleanedText     = result.getCleanedText();
         this.factRatioSource = result.getFactRatioSource();
         this.sectionBiasScore = result.getSectionBiasScore();
         this.background      = result.getBackground();
-        this.cotReasons      = new CotReasons(result);
+        this.cotReasons         = new CotReasons(result);
+        this.factCheckResults   = parseFactCheckResults(result.getFactCheckResults());
         this.totalScore      = result.getTotalScore();
         this.indicators      = new Indicators(result);
         this.bias            = new BiasInfo(result);
@@ -56,53 +61,54 @@ public class AnalysisResultResponse {
                 .collect(Collectors.toList());
     }
 
-    private static List<SectionInfo> parseSections(String json) {
+    private static List<FactCheckResult> parseFactCheckResults(String json) {
         if (json == null || json.isBlank() || json.equals("[]")) return Collections.emptyList();
         try {
-            return MAPPER.readValue(json, new TypeReference<List<SectionInfo>>() {});
+            return MAPPER.readValue(json, new TypeReference<List<FactCheckResult>>() {});
         } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
     @Getter
-    @NoArgsConstructor
     public static class SectionInfo {
-        @JsonProperty("topic")
         private String topic;
-
-        @JsonProperty("step1_biased_expressions")
+        private String biasLabel;
+        private Double confidence;
+        private String reason;
         private List<String> step1BiasedExpressions;
-
-        @JsonProperty("step2_neutral_expressions")
         private List<String> step2NeutralExpressions;
-
-        @JsonProperty("step3_judgment")
         private String step3Judgment;
 
-        @JsonProperty("bias_label")
-        private String biasLabel;
+        public SectionInfo(AnalysisSection section) {
+            this.topic      = section.getTopic();
+            this.biasLabel  = section.getBiasLabel();
+            this.confidence = section.getConfidence() != null ? section.getConfidence().doubleValue() : null;
+            this.reason     = section.getReason();
+            this.step3Judgment            = section.getStep3Judgment();
+            this.step1BiasedExpressions   = parseStringList(section.getStep1BiasedExpressions());
+            this.step2NeutralExpressions  = parseStringList(section.getStep2NeutralExpressions());
+        }
 
-        @JsonProperty("confidence")
-        private Double confidence;
-
-        @JsonProperty("reason")
-        private String reason;
+        private static List<String> parseStringList(String json) {
+            if (json == null || json.isBlank()) return Collections.emptyList();
+            try {
+                return MAPPER.readValue(json, new TypeReference<List<String>>() {});
+            } catch (Exception e) {
+                return Collections.emptyList();
+            }
+        }
     }
 
     @Getter
     public static class Indicators {
         private Float emotionNeutrality;
         private Float factRatio;
-        private Float sourceBalance;
-        private Float omissionNeutrality;
         private Float biasScore;
 
         public Indicators(AnalysisResult result) {
             this.emotionNeutrality  = result.getEmotionNeutrality();
             this.factRatio          = result.getFactRatio();
-            this.sourceBalance      = result.getSourceBalance();
-            this.omissionNeutrality = result.getOmissionNeutrality();
             this.biasScore          = result.getBiasScore();
         }
     }
@@ -110,14 +116,12 @@ public class AnalysisResultResponse {
     @Getter
     public static class BiasInfo {
         private String biasDirection;
-        private String spectrumLabel;
         private String biasLabel;
         private Float  biasConfidence;
         private String biasReason;
 
         public BiasInfo(AnalysisResult result) {
             this.biasDirection  = result.getBiasDirection();
-            this.spectrumLabel  = result.getSpectrumLabel();
             this.biasLabel      = result.getBiasLabel();
             this.biasConfidence = result.getBiasConfidence();
             this.biasReason     = result.getBiasReason();
@@ -139,16 +143,34 @@ public class AnalysisResultResponse {
 
     @Getter
     public static class CotReasons {
-        private String vocab;
-        private String framing;
-        private String citation;
-        private String omission;
+        private String factRatio;
+        private String emotionNeutrality;
 
         public CotReasons(AnalysisResult result) {
-            this.vocab    = result.getCotVocabReason();
-            this.framing  = result.getCotFramingReason();
-            this.citation = result.getCotCitationReason();
-            this.omission = result.getCotOmissionReason();
+            this.factRatio         = result.getCotFactRatioReason();
+            this.emotionNeutrality = result.getCotEmotionReason();
         }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class FactCheckResult {
+        @JsonProperty("fact")
+        private String fact;
+
+        @JsonProperty("found")
+        private Boolean found;
+
+        @JsonProperty("rating")
+        private String rating;
+
+        @JsonProperty("score")
+        private Double score;
+
+        @JsonProperty("publisher")
+        private String publisher;
+
+        @JsonProperty("url")
+        private String url;
     }
 }
