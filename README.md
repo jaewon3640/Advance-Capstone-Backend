@@ -23,7 +23,10 @@
 <!-- 📷 서비스 데모 GIF 자리 → docs/images/demo.gif -->
 <img src="docs/images/demo.gif" width="760" alt="NewsLens 서비스 데모"/>
 <br/>
-<sub>▲ 서비스 데모 — <code>docs/images/demo.gif</code> (이미지 추가 예정)</sub>
+<sub>▲ 서비스 데모 — <img width="2302" height="1327" alt="image" src="https://github.com/user-attachments/assets/cd7e853f-a316-455b-b234-18605386a954" />
+<img width="2505" height="1550" alt="image" src="https://github.com/user-attachments/assets/cdcd21b1-96f9-4f2d-90b6-ec438c02ce1b" />
+
+</sub>
 
 </div>
 
