@@ -4,7 +4,7 @@
 
 **한 사건을 여러 언론사 관점에서 비교해, 편향에 치우치지 않고 균형 있게 판단하도록 돕는 서비스**
 
-뉴스 기사의 **정치적 편향·사실성을 AI로 분석**하고, 유튜브 댓글로 **여론을 분석**하여 시각화합니다.
+뉴스 기사의 **정치적 편향·사실성을 AI로 분석**하고, 유튜브 댓글로 **여론을 분석**하여 시각화
 
 <br/>
 
@@ -47,7 +47,6 @@
 - **팩트체크**: Google Fact Check API 근거 제시
 - **요약 · 배경지식 · 키워드** 자동 생성
 
-<!-- 📷 분석 결과 화면 자리 → docs/images/analysis-result.png -->
 <p align="center">
   <img src="docs/images/analysis-result.png" width="720" alt="편향·팩트체크 분석 결과 화면"/><br/>
   <sub>▲ 편향·팩트체크 결과 화면 —<img width="1655" height="1592" alt="image" src="https://github.com/user-attachments/assets/59737cc0-6508-4d85-b5b5-03e4cec27384" />
@@ -59,12 +58,10 @@
 
 ### 💬 여론 분석 (유튜브 댓글)
 - YouTube Data API v3로 관련 영상 댓글 수집
-- **감정 분석**: `klue/roberta-base` 파인튜닝 3클래스 모델(부정 / 긍정 / 중립)
 - **봇 · 스팸 탐지**: AI 탐지 모델 + 규칙 기반(TF-IDF 중복, 선동 키워드 등) 하이브리드
 - **여론 요약**: 긍정 / 부정 / 중립 감정별 요약 분리 제공
 
 <p align="center">
-  <img src="docs/images/youtube-opinion.png" width="720" alt="유튜브 여론 분석 결과 화면"/><br/>
   <sub>▲ 유튜브 여론 분석 화면 — <img width="1075" height="1145" alt="image" src="https://github.com/user-attachments/assets/7bfdaf6f-84df-426f-b054-c396ec4d38b5" />
     <img width="1392" height="645" alt="image" src="https://github.com/user-attachments/assets/6ca927cd-f6ad-4a0b-b452-aa61b1cf364f" />
 
@@ -145,7 +142,10 @@ Prometheus + Grafana로 JVM 힙 · HikariCP 커넥션풀 · 스레드풀 큐 · 
 <!-- 📷 Grafana 대시보드 자리 → docs/images/grafana-overview.png -->
 <p align="center">
   <img src="docs/images/grafana-overview.png" width="760" alt="Grafana 모니터링 대시보드"/><br/>
-  <sub>▲ Grafana 대시보드 — <code>docs/images/grafana-overview.png</code> (이미지 추가 예정)</sub>
+  <sub>▲ Grafana 대시보드 —<img width="3430" height="1555" alt="image" src="https://github.com/user-attachments/assets/2c795130-1e4a-4f09-bb63-fa5ebece2977" />
+    <img width="391" height="177" alt="image" src="https://github.com/user-attachments/assets/fb598b3d-ada6-4d32-ae92-eef4b613c308" />
+
+</sub>
 </p>
 
 ---
