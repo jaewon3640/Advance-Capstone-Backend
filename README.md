@@ -50,7 +50,11 @@
 <!-- 📷 분석 결과 화면 자리 → docs/images/analysis-result.png -->
 <p align="center">
   <img src="docs/images/analysis-result.png" width="720" alt="편향·팩트체크 분석 결과 화면"/><br/>
-  <sub>▲ 편향·팩트체크 결과 화면 — <code>docs/images/analysis-result.png</code> (이미지 추가 예정)</sub>
+  <sub>▲ 편향·팩트체크 결과 화면 —<img width="1655" height="1592" alt="image" src="https://github.com/user-attachments/assets/59737cc0-6508-4d85-b5b5-03e4cec27384" />
+    <img width="1512" height="547" alt="image" src="https://github.com/user-attachments/assets/e37a9154-d270-4564-aee5-5c12b62f3164" />
+    <img width="1615" height="730" alt="image" src="https://github.com/user-attachments/assets/d1a5c515-b61d-4868-a964-f9fabc10cc9f" />
+
+</sub>
 </p>
 
 ### 💬 여론 분석 (유튜브 댓글)
@@ -59,54 +63,29 @@
 - **봇 · 스팸 탐지**: AI 탐지 모델 + 규칙 기반(TF-IDF 중복, 선동 키워드 등) 하이브리드
 - **여론 요약**: 긍정 / 부정 / 중립 감정별 요약 분리 제공
 
-<!-- 📷 유튜브 여론 분석 화면 자리 → docs/images/youtube-opinion.png -->
 <p align="center">
   <img src="docs/images/youtube-opinion.png" width="720" alt="유튜브 여론 분석 결과 화면"/><br/>
-  <sub>▲ 유튜브 여론 분석 화면 — <code>docs/images/youtube-opinion.png</code> (이미지 추가 예정)</sub>
+  <sub>▲ 유튜브 여론 분석 화면 — <img width="1075" height="1145" alt="image" src="https://github.com/user-attachments/assets/7bfdaf6f-84df-426f-b054-c396ec4d38b5" />
+    <img width="1392" height="645" alt="image" src="https://github.com/user-attachments/assets/6ca927cd-f6ad-4a0b-b452-aa61b1cf364f" />
+
+</sub>
 </p>
-
-### 🧩 크롬 확장 프로그램
-- 뉴스 페이지에서 바로 분석 요청 → 결과 오버레이
-
 ---
 
 ## 1.2 시스템 아키텍처
 
-<!-- 📷 아키텍처 다이어그램 자리 → docs/images/architecture.png -->
 <p align="center">
   <img src="docs/images/architecture.png" width="820" alt="시스템 아키텍처 다이어그램"/><br/>
-  <sub>▲ 시스템 아키텍처 — <code>docs/images/architecture.png</code> (이미지 추가 예정)</sub>
+  <sub>▲ 시스템 아키텍처 —<img width="783" height="587" alt="image" src="https://github.com/user-attachments/assets/f0ffa24b-4b24-4b5e-81d6-5d46969ee648" />
+</sub>
 </p>
-
-<details>
-<summary>텍스트 아키텍처 (이미지 대체용)</summary>
-
-```
-[크롬 확장 / React 프론트]
-            │  REST
-            ▼
-   [Spring Boot 백엔드]  ──┐
-   - 입력 분기(TEXT/URL/IMAGE)     │ 크롤링(Jsoup) · OCR(Tess4J) · 전처리(Komoran)
-   - 비동기 분석 오케스트레이션      │ 외부 API(Naver 뉴스, Google Fact Check)
-            │  비동기 호출/콜백       │
-            ▼                       │
-   [AI 엔진 (Flask)]  ◀─────────────┘
-   - Generated Knowledge → CoT 편향분석 → 문장 하이라이팅
-   - Topic 캐싱 / Model Tiering (gpt-4o-mini ↔ gpt-4o)
-            │
-            ▼
-   [감정분석 모델 (RoBERTa, HuggingFace)]  ── 유튜브 여론 분석
-```
-</details>
 
 ### 기술 스택
 | 영역 | 스택 |
 |------|------|
 | 백엔드 | Java 17, Spring Boot 3.5.x, Spring Data JPA, MySQL, Redis, Caffeine |
-| AI 엔진 | Python, Flask, OpenAI GPT-4o / 4o-mini, BeautifulSoup, KoNLPy, ChromaDB |
-| 감정분석 모델 | PyTorch, HuggingFace Transformers, `klue/roberta-base` 파인튜닝 |
+| AI 엔진 | Python, FastAPI, OpenAI GPT-4o / 4o-mini, BeautifulSoup, KoNLPy, ChromaDB |
 | 프론트 | React (CRA) |
-| 확장 | Chrome Extension (Manifest) |
 | 인프라 | Docker / Docker Compose, AWS EC2 · ALB, GitHub Actions, JMeter |
 | 모니터링 | Prometheus, Grafana, Micrometer |
 | 외부 API | YouTube Data API v3, Google Fact Check API, Naver 뉴스 API |
@@ -115,10 +94,10 @@
 
 ## 1.3 데이터베이스 ERD
 
-<!-- 📷 ERD 이미지 자리 → docs/images/erd.png -->
+<img width="1138" height="626" alt="image" src="https://github.com/user-attachments/assets/b0cbe5c9-79e5-4247-ae2c-ff27f7e0ae40" />
+
 <p align="center">
-  <img src="docs/images/erd.png" width="820" alt="데이터베이스 ERD"/><br/>
-  <sub>▲ ERD — <code>docs/images/erd.png</code> (이미지 추가 예정)</sub>
+  <img src="docs/images/erd.png" width="820" alt="데이터베이스 ERD"/><br/
 </p>
 
 ---
@@ -157,9 +136,8 @@
 
 # Part 2. 리팩토링 & 트러블슈팅
 
-> **핵심 원칙: 추측이 아니라 "측정 → 개선 → 재측정".**
-> 모든 성능 수치는 학습 결과가 아니라 **운영 환경 부하 테스트** 기반입니다.
-> 측정 환경·기준·방법은 [`benchmark-method.md`](./Advance-Capstone-Backend/docs/benchmark-method.md), 시행착오 기록은 [`troubleshooting.md`](./Advance-Capstone-Backend/docs/troubleshooting.md) 참고.
+> 측정 → 개선 → 재측정 과정을 반복
+> 모든 성능 수치는 학습 결과가 아니라 **운영 환경 부하 테스트** 기반.
 
 ### 모니터링 기반 측정
 Prometheus + Grafana로 JVM 힙 · HikariCP 커넥션풀 · 스레드풀 큐 · AI 지연을 상시 관측하고, **모든 개선의 before/after 근거**로 사용했습니다.
@@ -257,34 +235,3 @@ Prometheus + Grafana로 JVM 힙 · HikariCP 커넥션풀 · 스레드풀 큐 · 
 
 <br/>
 
-# Part 3. 실행 & 컨벤션
-
-## 3.1 로컬 실행
-
-**사전 요구사항** — Java 17+, Docker & Docker Compose, Node.js 18+, Python 3.10+
-
-```bash
-# 백엔드 + AI 엔진 (백엔드 레포에서)
-docker-compose up -d          # MySQL + Redis + Backend + AI 엔진
-# Swagger: http://localhost:8080/swagger-ui.html
-```
-
-```powershell
-# 감정분석 모델 (이 레포)
-& venv\Scripts\Activate.ps1
-python src/test_real_comments.py           # 유튜브 댓글 분석 파이프라인
-python src/train/train_sentiment_3class.py # 모델 재학습 (GPU 필요)
-```
-
-**환경 변수 (`.env`)** — `OPENAI_API_KEY` · `YOUTUBE_API_KEY` · `GOOGLE_FACTCHECK_API_KEY` · `HUGGINGFACE_TOKEN`
-
-## 3.2 컨벤션
-
-```
-main ← 배포용 (PR 머지만)
-└── develop ← 개발 통합
-    ├── feature/기능명   ├── fix/버그명   └── refactor/대상명
-```
-
-- **커밋** — `feat` · `fix` · `refactor` · `docs` · `test` · `chore` + 한 줄 설명
-- **PR** — `develop` 브랜치로 PR, 최소 1인 리뷰 승인 후 머지, 로컬 빌드(`./gradlew build`) 성공 확인
